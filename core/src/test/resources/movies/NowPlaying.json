@@ -1,0 +1,27 @@
+{
+  "page": 1,
+  "results": [
+    {
+      "backdrop_path": "/5jkE2SzR5uR2egEb1rRhF22JyWN.jpg",
+      "id": 671,
+      "title": "Harry Potter and the Philosopher's Stone",
+      "original_title": "Harry Potter and the Philosopher's Stone",
+      "overview": "",
+      "poster_path": "/wuMc08IPKEatf9rnMNXvIDxqP4W.jpg",
+      "media_type": "movie",
+      "adult": false,
+      "original_language": "en",
+      "genre_ids": [
+        12,
+        14
+      ],
+      "popularity": 234.43,
+      "release_date": "2001-11-16",
+      "video": false,
+      "vote_average": 7.9,
+      "vote_count": 27593
+    }
+  ],
+  "total_pages": 2,
+  "total_results": 30
+}

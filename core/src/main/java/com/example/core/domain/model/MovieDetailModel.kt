@@ -1,0 +1,30 @@
+package com.example.core.domain.model
+
+data class MovieDetailModel (
+    val id: Int,
+    val adult: Boolean,
+    val backdropPath: String?,
+    val budget: Int,
+    val genres: List<GenreModel>,
+    val homepage: String?,
+    val imdbId: String?,
+    val originalLanguage: String,
+    val originalTitle: String,
+    val overview: String,
+    val popularity: Double,
+    val posterPath: String?,
+    val releaseDate: String?,
+    val revenue: Long,
+    val runtime: Int?,
+    val status: String,
+    val tagline: String?,
+    val title: String,
+    val video: Boolean,
+    val voteAverage: Double,
+    val voteCount: Int,
+    val rating : Double,
+    val credits: CreditsListModel,
+    val images : ImagesListModel,
+    val videos : VideosListModel,
+    val isWishListed: Boolean
+)

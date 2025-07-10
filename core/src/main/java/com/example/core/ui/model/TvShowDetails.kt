@@ -1,0 +1,32 @@
+package com.example.core.ui.model
+
+data class TvShowDetails (
+    val id: Int = 0,
+    val name: String ="",
+    val adult: Boolean = false,
+    val backdropPath: String? = "",
+    val episodeRunTime: List<Int> = emptyList(),
+    val firstAirDate: String? = "",
+    val genres: List<Genre> = emptyList(),
+    val seasons : List<Season> = emptyList(),
+    val homepage: String ="",
+    val inProduction: Boolean = false,
+    val languages: List<String> = emptyList(),
+    val lastAirDate: String? = "",
+    val numberOfEpisodes: Int = 0,
+    val numberOfSeasons: Int =0,
+    val originCountry: List<String> = emptyList(),
+    val originalLanguage: String = "",
+    val originalName: String = "",
+    val overview: String ="",
+    val popularity: Double =0.0,
+    val posterPath: String? ="",
+    val status: String ="",
+    val tagline: String ="",
+    val type: String ="",
+    val voteAverage: Double=0.0,
+    val voteCount: Int =0,
+    val credits: CreditsList = CreditsList(emptyList(),emptyList()),
+    val rating : Double = 0.0,
+    val isWishListed: Boolean = false
+)
