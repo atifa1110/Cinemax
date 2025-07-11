@@ -126,4 +126,4 @@ android-dynamic-feature = { id = "com.android.dynamic-feature", version.ref = "a
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
-
+jacoco = { id = "jacoco", version = "0.8.11" }

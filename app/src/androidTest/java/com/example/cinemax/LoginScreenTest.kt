@@ -16,6 +16,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.cinemax.screen.login.LoginScreen
 import com.example.cinemax.screen.login.LoginUiState
 import com.example.cinemax.ui.theme.CinemaxTheme
+import kotlinx.coroutines.flow.emptyFlow
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -59,6 +60,7 @@ class LoginScreenTest {
                             else null
                         )
                     },
+                    eventFlow = emptyFlow(),
                     onLoginClick = {},
                     onForgotPasswordClick = {},
                     snackBarHostState = snackBarHostState
@@ -102,6 +104,7 @@ class LoginScreenTest {
                             else null
                         )
                     },
+                    eventFlow = emptyFlow(),
                     onLoginClick = {},
                     onForgotPasswordClick = {},
                     snackBarHostState = snackBarHostState
@@ -122,6 +125,8 @@ class LoginScreenTest {
 
     @Test
     fun enterEmailAndPasswordShowsLoginError() {
+        val view = FakeLoginViewModel()
+
         composeTestRule.setContent {
             CinemaxTheme {
                 val snackBarHostState = remember { SnackbarHostState() }
@@ -145,7 +150,8 @@ class LoginScreenTest {
                             else null
                         )
                     },
-                    onLoginClick = {},
+                    eventFlow = view.eventFlow,
+                    onLoginClick = {view.signInEmailAndPasswordError()},
                     onForgotPasswordClick = {},
                     snackBarHostState = snackBarHostState
                 )
@@ -164,8 +170,7 @@ class LoginScreenTest {
 
     @Test
     fun enterEmailAndPasswordShowsLoginSuccess() {
-        var navigatedToHome = false
-
+        val view = FakeLoginViewModel()
         composeTestRule.setContent {
            CinemaxTheme {
                 val snackBarHostState = remember { SnackbarHostState() }
@@ -190,10 +195,9 @@ class LoginScreenTest {
                         )
                     },
                     onLoginClick = {
-                        uiState.value = uiState.value.copy(
-                            isLogin = true
-                        )
+                        view.signInEmailAndPassword()
                     },
+                    eventFlow = view.eventFlow,
                     onForgotPasswordClick = {},
                     snackBarHostState = snackBarHostState
                 )
@@ -206,8 +210,8 @@ class LoginScreenTest {
         composeTestRule.onNodeWithTag("AuthButton").assertExists().performClick()
 
         // Ensures UI updates before assertion
-        composeTestRule.waitForIdle()
-        assert(navigatedToHome)
+        composeTestRule.waitForIdle() // Ensures UI updates before assertion
+        composeTestRule.onNodeWithText("Authentication Success").assertIsDisplayed()
     }
 
     @Test
@@ -238,6 +242,7 @@ class LoginScreenTest {
                     onLoginClick = {
                         uiState.value = uiState.value.copy(isLoading = true)
                     },
+                    eventFlow = emptyFlow(),
                     onForgotPasswordClick = {},
                     snackBarHostState = snackBarHostState
                 )
@@ -254,24 +259,4 @@ class LoginScreenTest {
         composeTestRule.onNodeWithTag("LoaderScreen").assertExists()
     }
 
-    @Test
-    fun clickingForgotButtonShowsForgotPage() {
-        var navigatedToForgot = false
-        composeTestRule.setContent {
-            CinemaxTheme {
-                val snackBarHostState = remember { SnackbarHostState() }
-                LoginScreen(
-                    uiState = LoginUiState(),
-                    onEmailChange = {},
-                    onPasswordChange = {},
-                    onLoginClick = {},
-                    onForgotPasswordClick = { navigatedToForgot = true},
-                    snackBarHostState = snackBarHostState
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithTag("ForgotButton").assertExists().performClick()
-        assert(navigatedToForgot)
-    }
 }

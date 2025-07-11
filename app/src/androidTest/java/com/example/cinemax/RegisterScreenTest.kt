@@ -291,5 +291,4 @@ class RegisterScreenTest {
             .assertIsDisplayed()
     }
 
-
 }

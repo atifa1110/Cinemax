@@ -9,6 +9,8 @@ import com.example.core.domain.usecase.SaveLoginStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -24,6 +26,14 @@ data class LoginUiState(
     val isLogin : Boolean = false,
 )
 
+interface LoginViewModelContract {
+    val uiState: StateFlow<LoginUiState>
+    val eventFlow: SharedFlow<LoginEvent>
+    fun onEmailChange(newEmail: String)
+    fun onPasswordChange(newPassword: String)
+    fun signInEmailAndPassword()
+}
+
 sealed class LoginEvent {
     data class ShowSnackbar(val message: String) : LoginEvent()
 }
@@ -32,15 +42,15 @@ sealed class LoginEvent {
 class LoginViewModel @Inject constructor(
     private val saveLoginStateUseCase: SaveLoginStateUseCase,
     private val signInWithEmailAndPasswordUseCase: SignInWithEmailAndPasswordUseCase
-) : ViewModel(){
+) : ViewModel(), LoginViewModelContract{
 
     private val _uiState = MutableStateFlow(LoginUiState())
-    val uiState = _uiState.asStateFlow()
+    override val uiState = _uiState.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<LoginEvent>()
-    val eventFlow = _eventFlow.asSharedFlow()
+    override val eventFlow = _eventFlow.asSharedFlow()
 
-    fun onEmailChange(newEmail: String) {
+    override fun onEmailChange(newEmail: String) {
         val emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$"
         val error = when {
             newEmail.isBlank() -> "Email cannot be empty"
@@ -52,7 +62,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun onPasswordChange(newPassword: String) {
+    override fun onPasswordChange(newPassword: String) {
         val error = when {
             newPassword.isBlank() -> "Password cannot be empty"
             newPassword.length < 8 -> "Password must be at least 8 characters"
@@ -66,40 +76,42 @@ class LoginViewModel @Inject constructor(
         saveLoginStateUseCase(completed)
     }
 
-    fun signInEmailAndPassword() = viewModelScope.launch {
-        signInWithEmailAndPasswordUseCase.invoke(uiState.value.email, uiState.value.password)
-            .collect { result ->
-                when (result) {
-                    is CinemaxResponse.Success -> {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                isLogin = true,
-                            )
+    override fun signInEmailAndPassword() {
+        viewModelScope.launch {
+            signInWithEmailAndPasswordUseCase.invoke(uiState.value.email, uiState.value.password)
+                .collect { result ->
+                    when (result) {
+                        is CinemaxResponse.Success -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    isLogin = true,
+                                )
+                            }
+                            _eventFlow.emit(ShowSnackbar(result.value))
+                            setLoginState(_uiState.value.isLogin)
                         }
-                        _eventFlow.emit(ShowSnackbar(result.value))
-                        setLoginState(_uiState.value.isLogin)
-                    }
 
-                    is CinemaxResponse.Loading -> {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = true,
-                                isLogin = false
-                            )
+                        is CinemaxResponse.Loading -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = true,
+                                    isLogin = false
+                                )
+                            }
                         }
-                    }
 
-                    is CinemaxResponse.Failure -> {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                isLogin = false,
-                            )
+                        is CinemaxResponse.Failure -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    isLogin = false,
+                                )
+                            }
+                            _eventFlow.emit(ShowSnackbar(result.error))
                         }
-                        _eventFlow.emit(ShowSnackbar(result.error))
                     }
                 }
-            }
+        }
     }
 }

@@ -19,3 +19,26 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Keep model classes (misalnya untuk Gson, Moshi, Retrofit)
+-keepclassmembers class com.example.model.** {
+    *;
+}
+
+# Keep ViewModel (karena dipakai lewat reflection oleh Hilt/Dagger)
+-keep class * extends androidx.lifecycle.ViewModel
+
+# Hilt
+-keep class dagger.hilt.** { *; }
+-keepclassmembers class * {
+    @dagger.hilt.android.lifecycle.HiltViewModel <init>(...);
+}
+
+# Room (hindari error waktu runtime)
+-keep class androidx.room.** { *; }
+-keep class * extends androidx.room.RoomDatabase
+
+# Gson
+-keepclassmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}

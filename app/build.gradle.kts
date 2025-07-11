@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.gms.google.services)
+    jacoco
 }
 
 val localProperties = Properties().apply {
@@ -147,6 +148,7 @@ dependencies {
     implementation(libs.accompanist.placeholder.material)
 
     debugImplementation(libs.leakcanary)
+    testImplementation(libs.mockk)
 
     implementation(project(":core"))
 }

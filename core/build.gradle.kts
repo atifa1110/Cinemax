@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+    jacoco
 }
 
 android {
@@ -37,6 +38,75 @@ android {
 
     buildFeatures {
         compose = true
+    }
+    val jacocoTestReport = tasks.create("jacocoTestReport")
+
+    androidComponents.onVariants { variant ->
+        val variantCap = variant.name.replaceFirstChar { it.uppercase() }
+        val testTaskName = "test${variantCap}UnitTest"
+
+        val reportTask = tasks.register("jacoco${testTaskName}Report", JacocoReport::class) {
+            dependsOn(testTaskName)
+
+            reports {
+                html.required.set(true)
+                xml.required.set(true) // For SonarQube or CI
+            }
+
+            val classesDir = layout.buildDirectory
+                .dir("tmp/kotlin-classes/${variant.name}")
+                .get()
+                .asFileTree
+                .matching {
+                    exclude(coverageExclusions)
+                }
+
+            val execFile = layout.buildDirectory
+                .file("jacoco/$testTaskName.exec")
+                .get()
+                .asFile
+
+            classDirectories.setFrom(classesDir)
+            sourceDirectories.setFrom(files("src/main/java", "src/main/kotlin"))
+            executionData.setFrom(execFile)
+        }
+
+        jacocoTestReport.dependsOn(reportTask)
+    }
+}
+
+val coverageExclusions = listOf(
+    "**/R.class",
+    "**/R$*.class",
+    "**/BuildConfig.*",
+    "**/Manifest*.*",
+    "**/*Test*.*"
+)
+
+configure<JacocoPluginExtension> {
+    toolVersion = "0.8.10"
+}
+
+tasks.withType<Test>().configureEach {
+    configure<JacocoTaskExtension> {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
+    }
+}
+
+tasks.register("cleanJacocoReport") {
+    doLast {
+        val reportDir = layout.buildDirectory
+            .dir("reports/jacoco")
+            .get()
+            .asFile
+
+        if (reportDir.exists()) {
+            reportDir.deleteRecursively()
+            println("✅ JaCoCo reports deleted from ${reportDir.path}")
+        } else {
+            println("ℹ️ No JaCoCo reports found in ${reportDir.path}")
+        }
     }
 }
 

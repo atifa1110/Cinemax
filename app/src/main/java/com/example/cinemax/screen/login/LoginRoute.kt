@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.cinemax.R
 import com.example.cinemax.component.AuthCinemaxButton
+import com.example.cinemax.component.CinemaxEmailField
 import com.example.core.ui.components.AuthTopAppBar
 import com.example.cinemax.component.CinemaxPasswordField
 import com.example.cinemax.component.CinemaxTextField
@@ -39,7 +40,9 @@ import com.example.cinemax.ui.theme.CinemaxTheme
 import com.example.cinemax.ui.theme.Dark
 import com.example.cinemax.ui.theme.White
 import com.example.cinemax.ui.theme.WhiteGrey
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.emptyFlow
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -58,16 +61,6 @@ fun LoginRoute(
         }
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.eventFlow.collectLatest { event ->
-            when (event) {
-                is LoginEvent.ShowSnackbar -> {
-                    snackBarHostState.showSnackbar(event.message)
-                }
-            }
-        }
-    }
-
     LoginScreen(
         uiState = uiState,
         onEmailChange = { viewModel.onEmailChange(it)},
@@ -77,7 +70,8 @@ fun LoginRoute(
             viewModel.signInEmailAndPassword()
         },
         onForgotPasswordClick = onNavigateToForgotPassword,
-        snackBarHostState = snackBarHostState
+        snackBarHostState = snackBarHostState,
+        eventFlow = viewModel.eventFlow
     )
 }
 
@@ -91,8 +85,19 @@ fun LoginScreen(
     loadingContent: @Composable () -> Unit = {
         LoaderScreen(modifier = Modifier.fillMaxSize())
     },
-    snackBarHostState: SnackbarHostState
+    snackBarHostState: SnackbarHostState,
+    eventFlow: Flow<LoginEvent>
 ) {
+    LaunchedEffect(Unit) {
+        eventFlow.collectLatest { event ->
+            when (event) {
+                is LoginEvent.ShowSnackbar -> {
+                    snackBarHostState.showSnackbar(event.message)
+                }
+            }
+        }
+    }
+
     if (uiState.isLoading) {
         loadingContent()
     } else {
@@ -155,11 +160,12 @@ fun LoginContent(
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        CinemaxTextField(
+        CinemaxEmailField(
             text = email,
             textError = emailError,
             labelName = R.string.email_address,
-            onTextChange = onEmailChange)
+            onTextChange = onEmailChange
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -209,7 +215,8 @@ fun LoginPreview(){
                 onPasswordChange = {},
                 onLoginClick = {},
                 onForgotPasswordClick = {},
-                snackBarHostState = snackBarHostState
+                snackBarHostState = snackBarHostState,
+                eventFlow = emptyFlow()
             )
     }
 }
