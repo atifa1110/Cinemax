@@ -39,7 +39,9 @@ android {
             buildConfigField("String", "TMDB_CERT_PIN", "\"sha256/f78NVAesYtdZ9OGSbK7VtGQkSIVykh3DnduuLIJHMu4=\"")
         }
         release {
-            isMinifyEnabled = false
+            buildConfigField("String", "TMDB_BEARER_TOKEN", "\"$tmdbToken\"")
+            buildConfigField("String", "TMDB_CERT_PIN", "\"sha256/f78NVAesYtdZ9OGSbK7VtGQkSIVykh3DnduuLIJHMu4=\"")
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
