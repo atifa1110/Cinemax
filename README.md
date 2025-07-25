@@ -2,8 +2,7 @@
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/atifa1110/Cinemax/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/atifa1110/Cinemax/tree/main)
 
-Cinemax is a modern Android movie browsing application built with **Jetpack Compose**, **Firebase**, and **TMDB API**. It features user authentication, movie search, wishlist management, and runtime detail viewing.
-
+Cinemax is A movie catalog application built with Jetpack Compose using the The Movie Database (TMDb) API. The app provides users with a smooth and responsive experience for exploring movies and TV series across multiple categories.
 ---
 
 ## ✨ Features
@@ -21,6 +20,7 @@ Cinemax is a modern Android movie browsing application built with **Jetpack Comp
 - ☁️ **Firebase Remote Config**
 - 📊 **Code coverage** using Jacoco
 - ⚙️ **CI/CD with CircleCI**: runs tests and builds APK automatically
+- 🛡️ **Encrypted Room Database** for secure local data storage (Room + SQLCipher)
 
 ---
 

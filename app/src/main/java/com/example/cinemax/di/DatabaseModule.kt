@@ -38,16 +38,6 @@ object DatabaseModule {
             .build()
     }
 
-//    @Singleton
-//    @Provides
-//    fun provideDataBase(@ApplicationContext context: Context): MovieDatabase {
-//        return Room.databaseBuilder(
-//            context.applicationContext,
-//            MovieDatabase::class.java,
-//            MovieDatabase.MOVIE_DATABASE
-//        ).build()
-//    }
-
     @Provides
     fun provideMovieDao(database: MovieDatabase): MovieDao = database.movieDao()
 
