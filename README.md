@@ -4,6 +4,12 @@
 
 Cinemax is A movie catalog application built with Jetpack Compose using the The Movie Database (TMDb) API. The app provides users with a smooth and responsive experience for exploring movies and TV series across multiple categories.
 
+## Preview
+<img width="166" height="334" alt="Image" src="https://github.com/user-attachments/assets/c4b3d4f5-d5f0-4121-8fd2-364d18086573" />
+<img width="167" height="330" alt="Image" src="https://github.com/user-attachments/assets/20fcb35c-b5fa-4b86-96d9-1964510f72cf" />
+<img width="167" height="331" alt="Image" src="https://github.com/user-attachments/assets/9d5030c6-7aaf-4691-818c-cc7532262558" />
+<img width="167" height="335" alt="Image" src="https://github.com/user-attachments/assets/9f58f776-5f55-4b24-aa56-47d1dbb8a603" />
+
 ## ✨ Features
 
 - 🔐 **Login & Authentication** with Firebase
